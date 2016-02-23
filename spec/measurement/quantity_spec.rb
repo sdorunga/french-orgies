@@ -22,6 +22,17 @@ RSpec.describe Quantity do
     expect(12.inch + 2.foot + 1779.yard).to eq(1.mile)
   end
 
+  it "can be compared to other temperatures" do
+    expect(0.celsius).to eq(32.fahrenheit)
+    expect(32.fahrenheit).to eq(0.celsius)
+    expect(10.celsius).to eq(50.fahrenheit)
+    expect(50.fahrenheit).to eq(10.celsius)
+    expect(100.celsius).to eq(212.fahrenheit)
+    expect(212.fahrenheit).to eq(100.celsius)
+    expect(-40.celsius).to eq(-40.fahrenheit)
+    expect(-40.fahrenheit).to eq(-40.celsius)
+  end
+
   it "can not add inconsistent units" do
     expect{1.foot + 1.ounce}.to raise_error("Incompatible types")
   end

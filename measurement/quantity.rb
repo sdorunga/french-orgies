@@ -13,7 +13,7 @@ class Quantity
   def ==(other)
     return false unless self.unit.comparable?(other.unit)
 
-    self.amount == amount_of(other)
+    (self.amount - amount_of(other)).abs < 0.00000001
   end
 
   def +(other)
@@ -23,7 +23,7 @@ class Quantity
   private
 
   def amount_of(other)
-    other.amount * other.unit.ratio(self.unit)
+    (other.amount - other.unit.starting_point) * other.unit.ratio(self.unit) + self.unit.starting_point
   end
 end
 

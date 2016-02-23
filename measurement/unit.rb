@@ -2,12 +2,13 @@
 class Unit
   class BaseUnit; def base_value; 1.0; end; def base_unit; self; end; end
 
-  attr_reader :base_value, :base_unit
+  attr_reader :base_value, :base_unit, :starting_point
   protected :base_value, :base_unit
 
-  def initialize(unit_count, unit)
+  def initialize(unit_count, unit, starting_point = 0)
     @base_value = unit_count * unit.base_value
     @base_unit = unit.base_unit
+    @starting_point = starting_point
   end
 
   def ratio(other)
@@ -19,6 +20,9 @@ class Unit
   def comparable?(other)
     other.base_unit == self.base_unit
   end
+
+  CELSIUS    = Unit.new(1, BaseUnit.new)
+  FAHRENHEIT = Unit.new(5/9.0, CELSIUS, 32)
 
   INCH       = Unit.new(1, BaseUnit.new)
   FOOT       = Unit.new(12, INCH)
