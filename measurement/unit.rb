@@ -11,10 +11,10 @@ class Unit
     @starting_point = starting_point
   end
 
-  def ratio(other)
+  def converted_amount(amount, other)
     raise "Incompatible types" unless comparable?(other)
 
-    self.base_value / other.base_value
+    (amount - other.starting_point) * other.base_value / self.base_value + self.starting_point
   end
 
   def comparable?(other)

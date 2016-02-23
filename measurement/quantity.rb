@@ -23,7 +23,7 @@ class Quantity
   private
 
   def amount_of(other)
-    (other.amount - other.unit.starting_point) * other.unit.ratio(self.unit) + self.unit.starting_point
+    unit.converted_amount(other.amount, other.unit)
   end
 end
 
