@@ -11,6 +11,8 @@ class Quantity
   end
 
   def ==(other)
+    return false unless self.unit.comparable?(other.unit)
+
     self.amount == amount_of(other)
   end
 

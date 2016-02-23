@@ -1,21 +1,35 @@
 # Understands the scale of measurements
 class Unit
-  attr_reader :mass
-  protected :mass
+  class BaseUnit; def base_value; 1.0; end; def base_unit; self; end; end
 
-  def initialize(mass)
-    @mass = mass
+  attr_reader :base_value, :base_unit
+  protected :base_value, :base_unit
+
+  def initialize(unit_count, unit)
+    @base_value = unit_count * unit.base_value
+    @base_unit = unit.base_unit
   end
-
-  TEASPOON   = Unit.new(1)
-  TABLESPOON = Unit.new(3)
-  OUNCE      = Unit.new(6)
-  CUP        = Unit.new(48)
-  PINT       = Unit.new(96)
-  QUART      = Unit.new(192)
-  GALLON     = Unit.new(768)
 
   def ratio(other)
-    self.mass.to_f / other.mass
+    raise "Incompatible types" unless comparable?(other)
+
+    self.base_value / other.base_value
   end
+
+  def comparable?(other)
+    other.base_unit == self.base_unit
+  end
+
+  INCH       = Unit.new(1, BaseUnit.new)
+  FOOT       = Unit.new(12, INCH)
+  YARD       = Unit.new(3, FOOT)
+  MILE       = Unit.new(1780, YARD)
+
+  TEASPOON   = Unit.new(1, BaseUnit.new)
+  TABLESPOON = Unit.new(3, TEASPOON)
+  OUNCE      = Unit.new(2, TABLESPOON)
+  CUP        = Unit.new(8, OUNCE)
+  PINT       = Unit.new(2, CUP)
+  QUART      = Unit.new(2, PINT)
+  GALLON     = Unit.new(4, QUART)
 end
