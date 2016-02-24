@@ -28,6 +28,18 @@ class Probability
     other.ratio == self.ratio
   end
 
+  def most_likely(others)
+    return self if others.empty?
+    first, *rest = others
+    self >= first ? self.most_likely(rest) : first.most_likely(rest)
+  end
+  
+  protected
+
+  def >=(other)
+    ratio >= other.ratio
+  end
+
   private
 
   def build(ratio)

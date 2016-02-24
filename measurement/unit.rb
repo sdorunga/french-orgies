@@ -2,8 +2,6 @@ require './measurement/quantity'
 # Understands the scale of measurements
 class Unit
   class BaseUnit
-    attr_reader :quantity_type
-
     def initialize(quantity_type)
       @quantity_type = quantity_type
     end
@@ -14,6 +12,10 @@ class Unit
     def base_unit
       self
     end
+
+    def quantity(number, unit)
+      @quantity_type.new(number, unit)
+    end
   end
 
   attr_reader :base_value, :base_unit, :offset
@@ -23,7 +25,7 @@ class Unit
     @base_value = unit_count * unit.base_value
     @base_unit = unit.base_unit
     @offset = offset
-    create_numeric_builder(label, @base_unit.quantity_type)
+    create_numeric_builder(label, @base_unit)
   end
 
   def converted_amount(amount, other)
@@ -37,11 +39,11 @@ class Unit
 
   private
 
-  def create_numeric_builder(label, quantity_type)
+  def create_numeric_builder(label, base_unit)
     unit = self
     Numeric.class_eval do
       define_method label.to_s do
-        quantity_type.new(self, unit)
+        base_unit.quantity(self, unit)
       end
     end
   end

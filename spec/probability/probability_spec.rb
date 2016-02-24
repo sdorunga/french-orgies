@@ -36,4 +36,10 @@ RSpec.describe Probability do
     expected_probability = described_class.new(0.8)
     expect(subject.or(other_probability)).to eq(expected_probability)
   end
+
+  it "gives the most likely probability" do
+    expect(Probability.new(0.5).most_likely([Probability.new(0.2), Probability.new(0.6)])).to eq(Probability.new(0.6))
+    expect(Probability.new(0.1).most_likely([Probability.new(0.5), Probability.new(0.5)])).to eq(Probability.new(0.5))
+    expect(Probability.new(0.5).most_likely([])).to eq(Probability.new(0.5))
+  end
 end

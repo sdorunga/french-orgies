@@ -23,4 +23,8 @@ class Rectangle
   def number_of_sides
     NUMBER_OF_SIDES
   end
+
+  def self.square(side)
+    new(side, side)
+  end
 end
