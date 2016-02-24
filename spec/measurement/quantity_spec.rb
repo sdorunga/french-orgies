@@ -1,10 +1,9 @@
-require './measurement/quantity'
 require './measurement/unit'
+require './measurement/quantity'
 
 #Confirms behaviour of Quantity
-RSpec.describe Quantity do
+RSpec.describe "Quantity" do
   it "is equal to other quantities" do
-    expect(6.teaspoon).to eq(Quantity.new(6, Unit::TEASPOON))
     expect(6.teaspoon).to eq(6.teaspoon)
     expect(6.teaspoon).to eq(2.tablespoon)
     expect(768.teaspoon).to eq(1.gallon)
@@ -31,6 +30,9 @@ RSpec.describe Quantity do
     expect(212.fahrenheit).to eq(100.celsius)
     expect(-40.celsius).to eq(-40.fahrenheit)
     expect(-40.fahrenheit).to eq(-40.celsius)
+    expect(0.kelvin).to eq(-273.15.celsius)
+    expect(-273.15.celsius).to eq(0.kelvin)
+    expect(0.kelvin).to eq(-459.67.fahrenheit)
   end
 
   it "can not add inconsistent units" do
@@ -41,5 +43,7 @@ RSpec.describe Quantity do
     expect(1.teaspoon + 2.teaspoon).to eq(1.tablespoon)
     expect(3.teaspoon + 1.tablespoon).to eq(2.tablespoon)
     expect(3.teaspoon + 1.tablespoon + 7.ounce + 1.cup + 1.pint + 3.quart).to eq(1.gallon)
+    expect{50.fahrenheit + 0.celsius}.to raise_error(NoMethodError)
+    expect{10.celsius + 10.celsius}.to raise_error(NoMethodError)
   end
 end
