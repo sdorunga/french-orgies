@@ -1,65 +1,63 @@
 # Understands if it can reach other locations on the graph
 
 class Node
+  attr_reader :neighbours, :edges
+  protected :neighbours, :edges
+
   UNREACHABLE = Float::INFINITY
   def initialize
     @neighbours = []
     @edges = []
   end
 
-  def link(node, weight)
-    neighbours << node
-    edges << Edge.new(self, node, weight)
+  def link(target, weight)
+    neighbours << target
+    edges << Edge.new(target, weight)
   end
 
   def reach?(destination, visited_neighbours = [])
-    recursive_hop_count(destination) != UNREACHABLE
-  end
-
-  def hop_count(destination)
-    result = recursive_hop_count(destination)
-    raise "Unreachable destination" if result == UNREACHABLE
-    result
+    sum(destination, Edge::FEWEST_HOPS) != UNREACHABLE
   end
 
   def cost(destination)
-    result = recursive_cost(destination)
+    result = sum(destination, Edge::LOWEST_COST)
     raise "Unreachable destination" if result == UNREACHABLE
     result
   end
 
-  protected
-
-  def recursive_cost(destination, used_starting_points=[])
-    return 0 if self == destination
-
-    (neighbours - used_starting_points).flat_map do |neighbour|
-      neighbour.recursive_cost(destination, used_starting_points.dup << self) + edges.map { |edge| edge.cost_to(neighbour) }.min
-    end.compact.min || UNREACHABLE
+  def hop_count(destination)
+    result = sum(destination, Edge::FEWEST_HOPS)
+    raise "Unreachable destination" if result == UNREACHABLE
+    result
   end
 
-  def recursive_hop_count(destination, used_starting_points = [])
+  def sum(destination, avoiding_edges=[], strategy)
     return 0 if self == destination
 
-    (neighbours - used_starting_points).flat_map do |neighbour|
-      neighbour.recursive_hop_count(destination, (used_starting_points.dup << self)) + 1
-    end.compact.min || UNREACHABLE
+    (edges - avoiding_edges).map do |edge|
+      edge.sum(destination, avoiding_edges.dup << edge, strategy)
+    end.min || UNREACHABLE
   end
-
-  attr_reader :neighbours, :edges
 end
 
 class Edge
+  FEWEST_HOPS = ->(weight) { 1 }
+  LOWEST_COST = ->(weight) { weight }
 
-  def initialize(start, finish, weight)
+  def initialize(finish, weight)
     @weight = weight
     @finish = finish
-    @start = start
   end
 
-  def cost_to(node)
-    return 0 if node == @start
-    return @weight if node == @finish
-    Node::UNREACHABLE
+  def sum(destination, avoiding_edges, strategy)
+    @finish.sum(destination, avoiding_edges, strategy) + strategy.call(weight)
+  end
+
+  private
+
+  attr_reader :weight
+
+  def hops
+    1
   end
 end
