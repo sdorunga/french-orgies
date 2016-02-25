@@ -20,15 +20,11 @@ class Node
   end
 
   def cost(destination)
-    result = sum(destination, Edge::LOWEST_COST)
-    raise "Unreachable destination" if result == UNREACHABLE
-    result
+    handle_unreachable(sum(destination, Edge::LOWEST_COST))
   end
 
   def hop_count(destination)
-    result = sum(destination, Edge::FEWEST_HOPS)
-    raise "Unreachable destination" if result == UNREACHABLE
-    result
+    handle_unreachable(sum(destination, Edge::FEWEST_HOPS))
   end
 
   def sum(destination, avoiding_edges=[], strategy)
@@ -37,6 +33,13 @@ class Node
     (edges - avoiding_edges).map do |edge|
       edge.sum(destination, avoiding_edges.dup << edge, strategy)
     end.min || UNREACHABLE
+  end
+
+  private
+
+  def handle_unreachable(result)
+    raise "Unreachable destination" if result == UNREACHABLE
+    result
   end
 end
 
