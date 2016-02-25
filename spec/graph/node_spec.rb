@@ -58,4 +58,10 @@ describe Node do
     expect(b.cost(h)).to eq(17)
     expect(b.cost(e)).to eq(7)
   end
+
+  it "can calculate path" do
+    expect(b.path(c).length).to eq(1)
+    expect(b.path(e).length).to eq(3)
+    expect(c.path(b).length).to eq(3)
+  end
 end
