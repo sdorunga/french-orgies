@@ -9,30 +9,25 @@ class Node
     neighbours << node
   end
 
-  def reach?(node, visited_neighbours = [])
-    return true if node == self
-
-    neighbours.any? do |neighbour|
-      next if visited_neighbours.include? neighbour
-      neighbour.reach? node, (visited_neighbours << neighbour)
-    end
+  def reach?(destination, visited_neighbours = [])
+    !!recursive_hop_count(destination, [], 0)
   end
 
-  def hop_count(node)
-    hops = recursive_hop_count(node, [self], 0)
-    raise "Unreachable node" if hops.empty?
-    hops.min
+  def hop_count(destination)
+    result = recursive_hop_count(destination, [], 0)
+    raise "Unreachable destination" unless result
+    result
   end
 
   protected
 
-  def recursive_hop_count(node, used_starting_points, hops)
-    return [hops] if self == node
-    return [hops + 1] if self.neighbours.include?(node)
+  def recursive_hop_count(destination, used_starting_points, hops)
+    return hops if self == destination
+    return hops + 1 if self.neighbours.include?(destination)
 
     (neighbours - used_starting_points).flat_map do |neighbour|
-      neighbour.recursive_hop_count(node, (used_starting_points.dup << self), hops + 1)
-    end
+      neighbour.recursive_hop_count(destination, (used_starting_points.dup << self), hops + 1)
+    end.compact.min
   end
 
   attr_reader :neighbours

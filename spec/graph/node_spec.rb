@@ -18,12 +18,12 @@ describe Node do
     f.link(h)
 
     c.link(d)
+    d.link(e)
     c.link(d)
     c.link(e)
 
     e.link(b)
 
-    d.link(e)
   end
 
   it "can tell if a node can be reached from another node" do
@@ -46,7 +46,7 @@ describe Node do
     expect(c.hop_count(f)).to eq(3)
     expect(b.hop_count(h)).to eq(2)
     expect(c.hop_count(d)).to eq(1)
-    expect{a.hop_count(b)}.to raise_error("Unreachable node")
-    expect{c.hop_count(g)}.to raise_error("Unreachable node")
+    expect{a.hop_count(b)}.to raise_error("Unreachable destination")
+    expect{c.hop_count(g)}.to raise_error("Unreachable destination")
   end
 end
