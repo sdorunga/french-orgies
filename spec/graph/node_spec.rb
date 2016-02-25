@@ -44,6 +44,7 @@ describe Node do
     expect(b.hop_count(c)).to eq(1)
     expect(b.hop_count(e)).to eq(2)
     expect(c.hop_count(f)).to eq(3)
+    expect(c.hop_count(h)).to eq(4)
     expect(b.hop_count(h)).to eq(2)
     expect(c.hop_count(d)).to eq(1)
     expect{a.hop_count(b)}.to raise_error("Unreachable destination")
