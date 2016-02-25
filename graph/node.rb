@@ -1,6 +1,7 @@
 # Understands if it can reach other locations on the graph
 
 class Node
+  UNREACHABLE = Float::INFINITY
   def initialize
     @neighbours = []
   end
@@ -10,12 +11,12 @@ class Node
   end
 
   def reach?(destination, visited_neighbours = [])
-    !!recursive_hop_count(destination, [])
+    recursive_hop_count(destination, []) != UNREACHABLE
   end
 
   def hop_count(destination)
     result = recursive_hop_count(destination, [])
-    raise "Unreachable destination" unless result
+    raise "Unreachable destination" if result == UNREACHABLE
     result
   end
 
@@ -25,8 +26,8 @@ class Node
     return 0 if self == destination
 
     (neighbours - used_starting_points).flat_map do |neighbour|
-      neighbour.recursive_hop_count(destination, (used_starting_points.dup << self))&.+(1)
-    end.compact.min
+      neighbour.recursive_hop_count(destination, (used_starting_points.dup << self)) + 1
+    end.compact.min || UNREACHABLE
   end
 
   attr_reader :neighbours
