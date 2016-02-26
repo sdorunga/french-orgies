@@ -63,5 +63,6 @@ describe Node do
     expect(b.path(c).length).to eq(1)
     expect(b.path(e).length).to eq(3)
     expect(c.path(b).length).to eq(3)
+    expect{b.path(g).length}.to raise_error("Unreachable destination")
   end
 end

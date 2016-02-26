@@ -75,6 +75,10 @@ class Edge
     @finish.pick(destination, avoiding_edges).add_edge(self, @weight)
   end
 
+  def self.total_cost(edges)
+    edges.map(&:weight).reduce(&:+)
+  end
+
   private
 
   def hops
